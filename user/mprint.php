@@ -130,12 +130,26 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
             .button-container {
                 display: none;
             }
+
+            .header img {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="print-container">
+        <div class="header" style="text-align: center; margin-bottom: 10px;">
+            <img src="../cvsu-logo.png" alt="CVSU Logo" style="width: 80px; height: auto;">
+            <div style="line-height: 1.2; margin-top: 5px;">
+                <div style="font-size: 12px;">Republic of the Philippines</div>
+                <div style="font-weight: bold; font-size: 16px;">CAVITE STATE UNIVERSITY</div>
+                <div style="font-size: 13px; font-weight: 600;">Don Severino de las Alas Campus</div>
+                <div style="font-size: 12px;">Indang, Cavite</div>
+            </div>
+        </div>
         <h2>Midterm Learning Outcome Summary Table</h2>
         <table>
             <thead>
@@ -200,6 +214,7 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
                     <th>INTENDED LEARNING OUTCOME</th>
                     <th>ACTION PLAN SUMMARY</th>
                     <th>PROPOSED TIMELINE</th>
+                    <th>COMMENT</th>
                 </tr>
             </thead>
             <tbody>
@@ -210,7 +225,8 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
                         <td class="hidden"><?= $row['exam_type']; ?></td>
                         <td><?= $row['ILO']; ?></td>
                         <td><?= $row['APS']; ?></td>
-                        <td><?= $row['p_timeline']; ?></td> 
+                        <td><?= $row['p_timeline']; ?></td>
+                        <td><?= $row['comments']; ?></td> 
                     </tr>
                 <?php } ?>
             </tbody>

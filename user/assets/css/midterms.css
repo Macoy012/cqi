@@ -1,0 +1,104 @@
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+}
+
+#sidebar a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
+#sidebar a i {
+    margin-right: 10px;
+}
+
+#sidebar a:hover {
+    background-color: #495057;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-toggler {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Main Content Area */
+#mainContent {
+    margin-left: 250px;
+}
+
+.table-wrapper {
+    max-height: 800px;
+    max-width: 1000px;
+    overflow-x: auto;
+    overflow-y: auto;
+    border: 1px solid rgb(40, 167, 69);
+    border-radius: 10px;
+    margin: 10px auto;
+}
+
+.table-container {
+    border: 2px solid rgb(40, 167, 69);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+}
+
+table thead th,
+table tbody td {
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5rem 0.75rem;
+}
+
+table th.sticky-left,
+table td.sticky-left {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 2;
+}
+
+table th.sticky-left-2,
+table td.sticky-left-2 {
+    position: sticky;
+    left: 130px;
+    background: white;
+    z-index: 2;
+}
+
+.table th.sticky-right,
+.table td.sticky-right {
+    position: sticky;
+    right: 0;
+    background: white;
+    z-index: 2;
+    border-left: 1px solid rgb(47, 167, 69);
+}
+
+/* 👇 Add this for hidden columns */
+.hidden {
+    display: none;
+}

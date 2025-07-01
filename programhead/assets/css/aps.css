@@ -1,0 +1,76 @@
+table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    table th:nth-child(1) { width: 10%; }
+    table th:nth-child(2) { width: 20%; }
+    table th:nth-child(3) { width: 20%; }
+    table th:nth-child(4) { width: 50%; }
+
+    table td, table th {
+        word-wrap: break-word;
+        white-space: normal;
+        vertical-align: top;
+    }
+
+    /* Ensure contenteditable cells behave correctly */
+    td[contenteditable="true"] {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+
+    * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* Fixed top navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #343a40;
+    color: white;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+}
+
+/* Fixed sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px; /* below navbar */
+    bottom: 0;
+    left: 0;
+    width: 240px;
+    background-color: #212529;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Scrollable content */
+#mainContent {
+    position: absolute;
+    top: 60px;
+    left: px;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+    

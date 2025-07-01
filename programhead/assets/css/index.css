@@ -1,0 +1,65 @@
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+}
+
+
+#sidebar a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
+#sidebar a i {
+    margin-right: 10px;
+    /* transition: margin 0.3s ease; */
+}
+
+#sidebar a:hover {
+    background-color: #495057;
+}
+
+
+#mainContent {
+    margin-left: 250px; /* Adjust content based on sidebar */
+    /* transition: margin-left 0.3s ease; */
+}
+
+.navbar-toggler {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.table-container {
+    border: 2px solid rgb(40, 167, 69);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 auto;
+    background-color: white;
+    width: 100%;
+    flex: 1;
+    min-width: 300px; /* Ensures tables stay readable on smaller screens */
+    max-width: 100%;
+    word-wrap: normal;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #343a40;
+}

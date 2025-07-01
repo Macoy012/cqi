@@ -1,0 +1,53 @@
+#sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+}
+
+#sidebar a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+}
+
+#sidebar a i {
+    margin-right: 10px;
+}
+
+
+#sidebar a:hover {
+    background-color: #495057;
+}
+
+#mainContent {
+    margin-left: 250px; 
+}
+
+
+.navbar-toggler {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-size: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+#navbar {
+    position: sticky; /* Keeps the navbar fixed when scrolling */
+    top: 0; /* Sticks the navbar to the top */
+    z-index: 1000; /* Ensures it stays on top of other content */
+    background-color: #343a40; /* Matches the Bootstrap dark background */
+}
+
+
+/* Main Content */

@@ -1,0 +1,79 @@
+.table-wrapper {
+    max-height: 450px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid rgb(40, 167, 69);
+    border-radius: 10px;
+    margin: 10px;
+    width: 100%;
+}
+
+.table-container {
+    border: 2px solid rgb(40, 167, 69);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    table-layout: auto;
+    white-space: nowrap;
+}
+
+/* Define the slide-down animation */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Define the slide-up animation */
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+/* Override Bootstrap modal style */
+.modal.fade {
+    display: none; /* Hide the modal by default */
+    opacity: 0;
+    transform: translateY(-100%); /* Initially position the modal above the screen */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* When the modal is shown (i.e., after 'show' class is added) */
+.modal.fade.show {
+    display: block;
+    animation: slideDown 0.5s ease-out forwards;
+}
+
+/* When the modal is hidden (i.e., before the 'show' class is removed) */
+.modal.fade:not(.show) {
+    animation: slideUp 0.5s ease-in forwards;
+}
+
+/* Optional: Add a fade-in effect to the backdrop */
+.modal-backdrop.show {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+#navbar {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+}

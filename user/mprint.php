@@ -268,7 +268,8 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
         <div class="signature-container">
             <div class="signature-box">
                 <span>PREPARED BY:</span><br>
-                <strong><?= $_SESSION['username']; ?></strong>
+                <strong><?= $_SESSION['username']; ?></strong><br>
+                _________________________
             </div>
             <div class="signature-box">
                 <span>ASSESSED BY:</span><br>

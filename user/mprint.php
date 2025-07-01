@@ -102,7 +102,15 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
             border-radius: 5px;
         }
         .signature-container {
-            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .signature-box {
+            width: 48%;
+            margin-bottom: 20px;
         }
         .signature {
             margin-top: 10px;
@@ -209,20 +217,20 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
         </table>
 
         <div class="signature-container">
-            <div class="signature">
-                <br><span>PREPARED BY:</span><br
+            <div class="signature-box">
+                <span>PREPARED BY:</span><br>
                 <strong><?= $_SESSION['username']; ?></strong>
             </div>
-            <div class="signature">
-                <span>ASSESSED BY:</span>
+            <div class="signature-box">
+                <span>ASSESSED BY:</span><br>
                 _________________________
             </div>
-            <div class="signature">
-                <span>ENDORSED BY:</span>
+            <div class="signature-box">
+                <span>ENDORSED BY:</span><br>
                 _________________________
             </div>
-            <div class="signature">
-                <span>APPROVED BY:</span>
+            <div class="signature-box">
+                <span>APPROVED BY:</span><br>
                 _________________________
             </div>
         </div>

@@ -18,7 +18,6 @@ if (isset($_GET['schedule_id'])) {
     $schedule_id = '';
 }
 
-// Get the schedule_id from URL if not already set in session
 if (isset($_GET['total_q'])) {
     $total_q = intval($_GET['total_q']);
     $_SESSION['total_q'] = $total_q;
@@ -28,35 +27,28 @@ if (isset($_GET['total_q'])) {
     $total_q = 10;
 }
 
-// Fetch schedule data from the database using schedule_id
+// Fetch schedule data
 $sql = "SELECT * FROM schedule WHERE schedule_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $schedule_id);
 $stmt->execute();
 $result = $stmt->get_result();
+$schedule = $result->num_rows > 0 ? $result->fetch_assoc() : null;
 
-// Initialize schedule variable
-$schedule = null;
-if ($result->num_rows > 0) {
-    $schedule = $result->fetch_assoc(); // Store the fetched schedule data
-} else {
-    $schedule = null;
-}
-
-// Fetch student records
+// Fetch midterm class records
 $sql = "SELECT * FROM mclassrec WHERE schedule_id = ? AND exam_type = 'midterm'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $schedule_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Initialize total counters for each question
+// Initialize question totals
 $totals = array_fill(1, $total_q, 0);
 $grand_total_attained = 0;
 
-// Read and decode the JSON file for active semester/year
+// Read active semester/year
 $active_data = file_get_contents('../data/active_semester_year.txt');
-$active_data = json_decode($active_data, true); // Decode JSON into an associative array
+$active_data = json_decode($active_data, true);
 
 if ($active_data && isset($active_data['academic_year'], $active_data['semester'])) {
     $active_year = $active_data['academic_year'];
@@ -66,20 +58,11 @@ if ($active_data && isset($active_data['academic_year'], $active_data['semester'
     die("Error: Could not retrieve active semester data.");
 }
 
-// Check if the selected class is active
-if ($schedule) {
-    $is_active = (
-        $schedule['academic_year'] === $active_year &&
-        $schedule['semester'] == $active_semester
-    );
-} else {
-    $is_active = false;
-}
+// Check if selected schedule is active
+$is_active = $schedule && $schedule['academic_year'] === $active_year && $schedule['semester'] == $active_semester;
 
-// Read the contents of the attainment_score.txt file
+// Read attainment score
 $attainment_score = file_get_contents('../data/attainment_score.txt');
-
-// Determine the status message
 $status_message = $is_active ? "Status: Active Semester" : "Status: Previous Semester";
 ?>
 <!DOCTYPE html>
@@ -104,6 +87,12 @@ $status_message = $is_active ? "Status: Active Semester" : "Status: Previous Sem
                 <h2>Midterm Class Record - <?php echo htmlspecialchars($schedule['schedule_id']); ?></h2>
                 <h5><?php echo htmlspecialchars($status_message); ?></h5>
                 <h5>Target Attainment Level: <?php echo htmlspecialchars($attainment_score); ?>%</h5>
+
+                <!-- ✅ Display schedule details -->
+                <h5>Description: <?php echo htmlspecialchars($schedule['description']); ?></h5>
+                <h5>Academic Year: <?php echo htmlspecialchars($schedule['academic_year']); ?></h5>
+                <h5>Semester: <?php echo htmlspecialchars($schedule['semester']); ?></h5>
+                <h5>Course/Yr & Sect: <?php echo htmlspecialchars($schedule['course_code'] . ' ' . $schedule['year'] . ' - ' . $schedule['section']); ?></h5>
 
                 <form action="" method="GET">
                     <label for="total_q">NUMBER OF ITEMS:</label>

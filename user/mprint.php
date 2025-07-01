@@ -79,7 +79,9 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
             text-align: center;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            font-weight: bold;
         }
         .hidden {
             display: none;

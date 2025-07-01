@@ -126,12 +126,42 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
             top: 20px;
             text-align: right;
         }
+
+        .cvsu-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cvsu-logo {
+            width: 70px;
+            height: auto;
+        }
+
+        .cvsu-text {
+            text-align: left;
+            line-height: 1.2;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .cvsu-main {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cvsu-sub {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
         @media print {
             .button-container {
                 display: none;
             }
 
-            .header img {
+            .cvsu-logo {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -141,13 +171,14 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
 <body>
 
     <div class="print-container">
-        <div class="header" style="text-align: center; margin-bottom: 10px;">
-            <img src="../cvsu-logo.png" alt="CVSU Logo" style="width: 80px; height: auto;">
-            <div style="line-height: 1.2; margin-top: 5px;">
-                <div style="font-size: 12px;">Republic of the Philippines</div>
-                <div style="font-weight: bold; font-size: 16px;">CAVITE STATE UNIVERSITY</div>
-                <div style="font-size: 13px; font-weight: 600;">Don Severino de las Alas Campus</div>
-                <div style="font-size: 12px;">Indang, Cavite</div>
+        <!-- CVSU Header -->
+        <div class="cvsu-header">
+            <img src="../cvsu-logo.png" alt="CVSU Logo" class="cvsu-logo">
+            <div class="cvsu-text">
+                <div>Republic of the Philippines</div>
+                <div class="cvsu-main">CAVITE STATE UNIVERSITY</div>
+                <div class="cvsu-sub">Don Severino de las Alas Campus</div>
+                <div>Indang, Cavite</div>
             </div>
         </div>
         <h2>Midterm Learning Outcome Summary Table</h2>

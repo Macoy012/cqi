@@ -38,7 +38,7 @@ $mcos_result = $stmt->get_result();
 $stmt->close();
 
 // Fetch data from maps table
-$maps_query = "SELECT ID, schedule_id, exam_type, ILO, APS, p_timeline FROM maps WHERE schedule_id = ?";
+$maps_query = "SELECT ID, schedule_id, exam_type, ILO, APS, p_timeline, comments FROM maps WHERE schedule_id = ?";
 $stmt = $conn->prepare($maps_query);
 $stmt->bind_param("i", $schedule_id);
 $stmt->execute();

@@ -1,9 +1,8 @@
-<?php 
 include '../database/dbconn.php';
 session_start();
 
 // Check if the user is logged in as a Facilitator
-if (!isset($_SESSION['usertype']) || !in_array($_SESSION['usertype'], ['Faculty', 'Personhead'])) {
+if (!isset($_SESSION['usertype']) || !in_array($_SESSION['usertype'], ['Faculty', 'Programhead'])) {
     error_log("Access denied - Session usertype: " . $_SESSION['usertype']);
     header("Location: ../index.php?error=unauthorized");
     exit();
@@ -11,6 +10,19 @@ if (!isset($_SESSION['usertype']) || !in_array($_SESSION['usertype'], ['Faculty'
 
 // Get schedule_id from URL
 $schedule_id = isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null;
+
+// Fetch active semester and academic year
+$activeFile = "../data/active_semester_year.txt";
+function getActiveSemesterAndYearFromFile($filePath) {
+    if (file_exists($filePath)) {
+        $content = file_get_contents($filePath);
+        if ($content) {
+            return json_decode($content, true);
+        }
+    }
+    return ["semester" => "1", "academic_year" => date('Y') . "-" . (date('Y') + 1)];
+}
+$activeSchedule = getActiveSemesterAndYearFromFile($activeFile);
 
 // Initialize schedule data
 $schedule = null;
@@ -31,11 +43,15 @@ if ($schedule_id) {
     }
 }
 
+// Fetch students for the schedule
 $sql = "SELECT * FROM listofstudents WHERE schedule_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $schedule_id);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Check if the selected schedule is active
+$isActiveSchedule = $schedule && $schedule['semester'] == $activeSchedule['semester'] && $schedule['academic_year'] == $activeSchedule['academic_year'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +65,7 @@ $result = $stmt->get_result();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/class.css">
-    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="cqi/css/bootstrap.css">
 </head>
 <body>
     <?php include './includes/navbar.php'; ?>
@@ -60,17 +76,25 @@ $result = $stmt->get_result();
             <h1>Class</h1>
             
             <?php if ($schedule): ?>
-                <h5>Schedule ID: <?php echo htmlspecialchars($schedule['schedule_id']); ?></h5>
-                <h5>Subject Code: <?php echo htmlspecialchars($schedule['subject_code']); ?></h5>
-                <h5>Description: <?php echo htmlspecialchars($schedule['description']); ?></h5>
-                <h5>Teacher Assigned: <?php echo htmlspecialchars($schedule['username']); ?></h5>
-                <h5>Academic Year: <?php echo htmlspecialchars($schedule['academic_year']); ?></h5>
-                <h5>Semester: <?php echo htmlspecialchars($schedule['semester']); ?></h5>
-                <h5>Course: <?php echo htmlspecialchars($schedule['course_code']); ?></h5>
-                <h5>Year & Section: <?php echo htmlspecialchars($schedule['year'] . "-" . $schedule['section']); ?></h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Schedule ID: <?php echo htmlspecialchars($schedule['schedule_id']); ?></h5>
+                        <h5>Subject Code: <?php echo htmlspecialchars($schedule['subject_code']); ?></h5>
+                        <h5>Description: <?php echo htmlspecialchars($schedule['description']); ?></h5>
+                        <h5>Teacher Assigned: <?php echo htmlspecialchars($schedule['username']); ?></h5>
+                        <h5>Academic Year: <?php echo htmlspecialchars($schedule['academic_year']); ?></h5>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Semester: <?php echo htmlspecialchars($schedule['semester']); ?></h5>
+                        <h5>Course: <?php echo htmlspecialchars($schedule['course_code']); ?></h5>
+                        <h5>Year: <?php echo htmlspecialchars($schedule['year']); ?></h5>
+                        <h5>Section: <?php echo htmlspecialchars($schedule['section']); ?></h5>
+                    </div>
+                </div>
             <?php else: ?>
                 <h5>No schedule found for the selected ID.</h5>
             <?php endif; ?>
+
             <div class="table-container">
                 <div class="table-wrapper">
                     <table class="table table-striped">
@@ -88,8 +112,7 @@ $result = $stmt->get_result();
                         </thead>
 
                         <tbody id="listofstudents">
-                        <?php if ($result->num_rows > 0): ?>
-                            <?php while ($row = $result->fetch_assoc()) { ?>
+                        <?php while ($row = $result->fetch_assoc()) { ?>
                                 <tr>
                                     <th scope="row"><?php echo $row['studID']; ?></th>
                                     <td><?php echo $row['fullname']; ?></td>
@@ -99,74 +122,61 @@ $result = $stmt->get_result();
                                     <td><?php echo $row['semester']; ?></td>
                                     <td><?php echo $row['academic_year']; ?></td>
                                     <td>
-                                        <a class="btn btn-sm btn-danger" href="operations/delete.php?id=<?php echo $row['id']; ?>&schedule_id=<?php echo $schedule_id; ?>"
-                                        onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                                        <?php if ($isActiveSchedule): ?>
+                                            <a class="btn btn-sm btn-danger" href="operations/delete.php?id=<?php echo $row['id']; ?>&schedule_id=<?php echo $schedule_id; ?>"
+                                                onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
+                                        <?php else: ?>
+                                            <span class="text-muted">View Only</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php } ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="8" class="text-center text-muted">No students enrolled in this subject.</td>
-                            </tr>
-                        <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
-                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add Student</button>
+
+                <?php if ($isActiveSchedule): ?>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add Student</button>
                     <h2>Upload Excel File (.xlsx)</h2>
                     <p><strong>Note:</strong> Excel file will be converted to CSV automatically in-browser.</p>
                     <input type="file" id="excelFile" accept=".xlsx">
-                    <button class="btn btn-success" onclick="convertExcelToCSV()">Upload </button>
-                </div>
+                    <button class="btn btn-success" onclick="convertExcelToCSV()">Upload</button>
+                <?php else: ?>
+                    <p class="text-muted">Actions are disabled for previous semesters/years.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
     <!-- Modal for Adding Student -->
-    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addStudentModalLabel">Add Student: Class - <?php echo htmlspecialchars($schedule['schedule_id']); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <?php if ($isActiveSchedule): ?>
+        <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addStudentModalLabel">Add Student: Class - <?php echo htmlspecialchars($schedule['schedule_id']); ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addStudentForm">
+                            <div class="mb-3">
+                                <label for="studentIdInput" class="form-label">Student Number</label>
+                                <input type="text" class="form-control" id="studentIdInput" required>
                             </div>
-                            <div class="modal-body">
-                                <form id="addStudentForm">
-                                    <input type="hidden" id="scheduleIdHidden" value="<?php echo htmlspecialchars($schedule['schedule_id']); ?>">
-                                    <div class="mb-3">
-                                        <label for="studentIdInput" class="form-label">Student Number</label>
-                                        <input type="text" class="form-control" id="studentIdInput" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="fullNameInput" class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" id="fullNameInput" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save</button>
-                                </form>
+                            <div class="mb-3">
+                                <label for="fullNameInput" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullNameInput" required>
                             </div>
-                        </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php endif; ?>
+
     <script>
         const scheduleId = "<?php echo htmlspecialchars($schedule_id); ?>";
-    </script>
-    <script>
-        function addRow() {
-            let table = document.getElementById("listofstudents");
-            let row = table.insertRow();
-            row.innerHTML = `
-                <td><input type="text" name="studID[]" required></td>
-                <td><input type="text" name="fullname[]" required></td>
-                <td><button type="button" onclick="deleteRow(this)">Delete</button></td>
-            `;
-        }
-
-        function deleteRow(btn) {
-            let row = btn.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
 
         function convertExcelToCSV() {
             const fileInput = document.getElementById('excelFile');
@@ -181,7 +191,6 @@ $result = $stmt->get_result();
                 const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                 const csv = XLSX.utils.sheet_to_csv(firstSheet);
 
-                // Create a Blob and append it to a form
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.enctype = 'multipart/form-data';
@@ -190,7 +199,7 @@ $result = $stmt->get_result();
                 const scheduleInput = document.createElement('input');
                 scheduleInput.type = 'hidden';
                 scheduleInput.name = 'schedule_id';
-                scheduleInput.value = <?php echo json_encode($schedule_id); ?>;
+                scheduleInput.value = "<?php echo $schedule_id; ?>";
 
                 const csvInput = document.createElement('input');
                 csvInput.type = 'hidden';
@@ -205,8 +214,5 @@ $result = $stmt->get_result();
             reader.readAsArrayBuffer(file);
         }
     </script>
-    <script src="../js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/index.js"></script>
-    <script src="assets/js/class.js"></script>
 </body>
 </html>

@@ -130,8 +130,10 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
         .cvsu-header {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         .cvsu-logo {
@@ -140,7 +142,7 @@ $current_date = date("F j, Y"); // Format: March 10, 2025
         }
 
         .cvsu-text {
-            text-align: left;
+            text-align: center;
             line-height: 1.2;
             font-family: Arial, sans-serif;
             font-size: 13px;
